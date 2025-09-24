@@ -130,3 +130,54 @@
 html, body {
   font-family: var(--font-space-grotesk), sans-serif;
 }
+/* 🚫 ULTIMATE GOOGLE TRANSLATE BANNER REMOVAL */
+body > .skiptranslate,
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame,
+.skiptranslate iframe,
+.VIpgJd-ZVi9od-ORHb-OEVmcd,
+.VIpgJd-ZVi9od-ORHb,
+div[id*="goog-gt-"],
+div[class*="goog-gt-"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+/* 🚫 REMOVE BODY OFFSET */
+body {
+  top: 0px !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  position: static !important;
+}
+
+/* 🎨 CLEAN TRANSLATE DROPDOWN */
+.goog-te-combo {
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+  padding: 0.5rem 0.75rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  outline: none !important;
+  min-width: 120px !important;
+  transition: all 0.2s ease !important;
+  box-shadow: none !important;
+}
+
+.goog-te-combo:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+/* 🚫 HIDE GOOGLE BRANDING */
+.goog-logo-link,
+.goog-te-gadget span:not(.goog-te-combo),
+.goog-te-gadget img {
+  display: none !important;
+}
