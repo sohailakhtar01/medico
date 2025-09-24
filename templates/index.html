@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Vibrant Doctor Chatbot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+        min-height: 100vh;
+      }
+      /* Doctor GIF Floating Button */
+      #chatbot-btn {
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        z-index: 1000;
+        background: transparent;
+        border: none;
+        outline: none;
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        box-shadow: 0 8px 32px rgba(72, 45, 212, 0.3);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 8px 32px rgba(167, 119, 227, 0.3);
+        }
+        50% {
+          box-shadow: 0 4px 24px 8px rgba(110, 142, 251, 0.25);
+        }
+      }
+      #chatbot-btn img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        border: 3px solid #38f9d7;
+        background: #fff;
+        object-fit: cover;
+        box-shadow: 0 4px 12px rgba(33, 167, 212, 0.2);
+        margin-bottom: 6px;
+      }
+      #click-prompt {
+        font-size: 1rem;
+        color: #333;
+        background: #fff9;
+        padding: 2px 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        box-shadow: 0 2px 10px rgba(246, 211, 101, 0.15);
+        margin-top: 2px;
+        animation: blink 1.18s infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        60% {
+          opacity: 0.3;
+        }
+      }
+
+      /* Chatbot window */
+      #chatbot-window {
+        display: none;
+        flex-direction: column;
+        position: fixed;
+        bottom: 120px;
+        right: 40px;
+        width: 340px;
+        height: 480px;
+        background: linear-gradient(120deg, #f093fb 0%, #f5576c 100%);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(246, 211, 101, 0.3);
+        z-index: 1001;
+        animation: popupIn 0.3s ease;
+        overflow: hidden;
+      }
+      @keyframes popupIn {
+        0% {
+          transform: translateY(50px) scale(0.95);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+      }
+      #chatbot-header {
+        background: linear-gradient(135deg, #43e97b, #38f9d7);
+        color: #333;
+        padding: 18px;
+        font-size: 1.3rem;
+        font-weight: bold;
+        text-align: center;
+      }
+      #chatbot-close {
+        position: absolute;
+        top: 16px;
+        right: 18px;
+        font-size: 1.2rem;
+        color: #333;
+        background: #fff7;
+        border: none;
+        border-radius: 99px;
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #chatbot-body {
+        flex: 1;
+        padding: 18px 14px;
+        overflow-y: auto;
+        font-size: 1rem;
+        color: #fff;
+        background: none;
+      }
+      .bot-message {
+        background: #fff8;
+        color: #333;
+        border-radius: 10px 10px 10px 0;
+        padding: 10px 14px;
+        margin-bottom: 12px;
+        width: fit-content;
+        max-width: 90%;
+        box-shadow: 0 2px 8px rgba(255, 255, 255, 0.12);
+        animation: fadeIn 0.4s;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Vibrant Input Row */
+      #chat-input-row {
+        display: flex;
+        padding: 13px 12px;
+        background: rgba(255, 255, 255, 0.15);
+        border-top: 1.5px solid #f5b8b8;
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+        box-shadow: 0 -2px 8px 0 rgba(167, 119, 227, 0.06);
+        align-items: center;
+      }
+      #user-input {
+        flex: 1;
+        padding: 10px 14px;
+        font-size: 1rem;
+        border-radius: 8px;
+        border: 1.8px solid #6e8efb;
+        outline: none;
+        background: #fff8;
+        color: #833ab4;
+        box-shadow: 0 2px 7px rgba(110, 142, 251, 0.05);
+        margin-right: 9px;
+        transition: border-color 0.2s;
+      }
+      #user-input:focus {
+        border-color: #f5576c;
+        background: #fffcee;
+      }
+      /* Vibrant Send Button */
+      #send-btn {
+        background: linear-gradient(135deg, #43e97b, #38f9d7, #6e8efb, #f093fb);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1rem;
+        padding: 10px 18px;
+        box-shadow: 0 2px 12px rgba(110, 142, 251, 0.19);
+        cursor: pointer;
+        transition: transform 0.13s, background 0.2s;
+        animation: pulseSend 1.8s infinite;
+      }
+      @keyframes pulseSend {
+        0% {
+          box-shadow: 0 0 0 0 #43e97b44;
+        }
+        70% {
+          box-shadow: 0 0 0 6px #a777e344;
+        }
+        100% {
+          box-shadow: 0 0 0 0 #38f9d744;
+        }
+      }
+      #send-btn:hover {
+        background: linear-gradient(115deg, #fda085, #f5576c);
+        transform: scale(1.09) rotate(-2deg);
+      }
+    </style>
+  </head>
+  <body>
+    <button id="chatbot-btn" title="Start Chatting!">
+      <img src="doctor.gif" alt="Doctor Bot" />
+      <div id="click-prompt">👋 Click the Doctor to Chat!</div>
+    </button>
+
+    <div id="chatbot-window">
+      <div id="chatbot-header">
+        Your Chatting Bot
+        <button id="chatbot-close">&times;</button>
+      </div>
+      <div id="chatbot-body">
+        <div class="bot-message">
+          👋 Hi there! I'm your doctor assistant. How can I help?
+        </div>
+      </div>
+      <div id="chat-input-row">
+        <input
+          id="user-input"
+          type="text"
+          placeholder="Type your message..."
+          autocomplete="off"
+        />
+        <button id="send-btn">Send</button>
+      </div>
+    </div>
+
+    <script>
+      const chatbotBtn = document.getElementById("chatbot-btn");
+      const chatbotWindow = document.getElementById("chatbot-window");
+      const chatbotClose = document.getElementById("chatbot-close");
+      const sendBtn = document.getElementById("send-btn");
+      const userInputField = document.getElementById("user-input");
+      const chatbotBody = document.getElementById("chatbot-body");
+
+      chatbotBtn.onclick = () => {
+        chatbotWindow.style.display = "flex";
+      };
+      chatbotClose.onclick = () => {
+        chatbotWindow.style.display = "none";
+      };
+
+      sendBtn.onclick = async () => {
+        const userInput = userInputField.value.trim();
+        if (!userInput) return;
+
+        chatbotBody.innerHTML += `<div class="bot-message" style="background:#ccc;color:#000">You: ${userInput}</div>`;
+        userInputField.value = "";
+
+        const response = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userInput }),
+        });
+
+        const data = await response.json();
+        chatbotBody.innerHTML += `<div class="bot-message">${data.reply}</div>`;
+        chatbotBody.scrollTop = chatbotBody.scrollHeight;
+      };
+    </script>
+  </body>
+</html>
